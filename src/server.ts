@@ -28,6 +28,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chat message", (message, room) => {
+    console.log("Message: ", message, " Room: ", room);
+
     io.to(room).emit("chat message", message);
   });
 
