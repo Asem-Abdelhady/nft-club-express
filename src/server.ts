@@ -5,12 +5,11 @@ import cors from "cors";
 const app = express();
 const server = http.createServer(app);
 
-// Allow requests from any origin
 app.use(cors());
 
 const io = new SocketIoServer(server, {
   cors: {
-    origin: "*", // Allow any origin
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
@@ -18,14 +17,13 @@ const io = new SocketIoServer(server, {
 io.on("connection", (socket) => {
   console.log("A user connected");
 
-  socket.on(
-    "chat message",
-    (message: { text: string; userId: string; username: string }) => {
-      console.log("Got message: ", message);
+  socket.on("join room", (room) => {
+    socket.join(room);
+  });
 
-      io.emit("chat message", message);
-    }
-  );
+  socket.on("chat message", (message, room) => {
+    io.to(room).emit("chat message", message);
+  });
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");
