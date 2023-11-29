@@ -2,9 +2,9 @@ import express from "express";
 import http from "http";
 import { Server as SocketIoServer } from "socket.io";
 import cors from "cors";
+
 const app = express();
 const server = http.createServer(app);
-
 app.use(cors());
 
 const io = new SocketIoServer(server, {
@@ -19,6 +19,12 @@ io.on("connection", (socket) => {
 
   socket.on("join room", (room) => {
     socket.join(room);
+    console.log(`User joined room: ${room}`);
+  });
+
+  socket.on("leave room", (room) => {
+    socket.leave(room);
+    console.log(`User left room: ${room}`);
   });
 
   socket.on("chat message", (message, room) => {
